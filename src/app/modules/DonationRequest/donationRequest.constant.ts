@@ -1,0 +1,1 @@
+export const REQUEST_STSTUS = ["PENDING", "APPROVED", "REJECTED"];
