@@ -15,7 +15,7 @@ const moduleRoutes = [
     route: donationRequestRoutes,
   },
   {
-    path: "/my-profile",
+    path: "/profile",
     route: profileRoutes,
   },
 ];

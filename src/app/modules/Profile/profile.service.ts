@@ -3,16 +3,18 @@ import AppError from "../../errors/AppError";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import prisma from "../../utils/prisma";
-import { Profile } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 
-const getMyProfile = async (token: string) => {
-  if (!token) {
+const getMyProfile = async (fullToken: string) => {
+  if (!fullToken) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       "Unauthorized Access",
       "You do not have the necessary permissions to access this resource."
     );
   }
+
+  const [, token] = fullToken.split(" ");
 
   const decoded = jwt.verify(
     token,
@@ -30,6 +32,7 @@ const getMyProfile = async (token: string) => {
       name: true,
       email: true,
       bloodType: true,
+      status: true,
       location: true,
       availability: true,
       createdAt: true,
@@ -41,14 +44,16 @@ const getMyProfile = async (token: string) => {
   return result;
 };
 
-const updateProfile = async (token: string, payload: Partial<Profile>) => {
-  if (!token) {
+const updateProfile = async (fullToken: string, payload: any) => {
+  if (!fullToken) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       "Unauthorized Access",
       "You do not have the necessary permissions to access this resource."
     );
   }
+
+  const [, token] = fullToken.split(" ");
 
   const decoded = jwt.verify(
     token,
@@ -57,9 +62,9 @@ const updateProfile = async (token: string, payload: Partial<Profile>) => {
 
   const { id, name, email } = decoded;
 
-  const isUser = await prisma.profile.findUnique({
+  const isUser = await prisma.user.findUnique({
     where: {
-      userId: id,
+      id: id,
     },
   });
 
@@ -67,11 +72,38 @@ const updateProfile = async (token: string, payload: Partial<Profile>) => {
     throw new AppError(httpStatus.NOT_FOUND, "Error", "User not found!");
   }
 
-  const result = await prisma.profile.update({
-    where: {
-      userId: id,
-    },
-    data: payload,
+  // console.log(payload);
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const profileData = {
+      bio: payload?.bio,
+      age: payload?.age,
+      lastDonationDate: payload?.lastDonationDate,
+    };
+
+    const userData = {
+      name: payload?.name,
+      location: payload?.location,
+      bloodType: payload?.bloodType,
+      availability: payload?.availability,
+      status: payload?.status,
+    };
+
+    const profileUpdateData = await transactionClient.profile.update({
+      where: {
+        userId: id,
+      },
+      data: profileData,
+    });
+
+    const userUpdateData = await transactionClient.user.update({
+      where: {
+        id: id,
+      },
+      data: userData,
+    });
+
+    return { profileUpdateData, userUpdateData };
   });
 
   return result;

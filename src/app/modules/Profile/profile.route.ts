@@ -6,9 +6,9 @@ const router = express.Router();
 
 //call controller function
 router.get("/", profileController.getMyProfile);
-router.put(
-  "/",
-  validateRequest(profileValidation.profilevalidationSchema),
+router.patch(
+  "/update-profile",
+  // validateRequest(profileValidation.profilevalidationSchema),
   profileController.updateProfile
 );
 

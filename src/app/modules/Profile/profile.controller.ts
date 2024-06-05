@@ -5,8 +5,8 @@ import httpStatus from "http-status";
 import { profileServices } from "./profile.service";
 
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.authorization as string;
-  const result = await profileServices.getMyProfile(token);
+  const fullToken = req.headers.authorization as string;
+  const result = await profileServices.getMyProfile(fullToken);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -17,8 +17,8 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.authorization as string;
-  const result = await profileServices.updateProfile(token, req.body);
+  const fullToken = req.headers.authorization as string;
+  const result = await profileServices.updateProfile(fullToken, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

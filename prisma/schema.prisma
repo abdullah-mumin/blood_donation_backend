@@ -20,6 +20,7 @@ model User {
   password           String
   bloodType          BloodType
   role               UserRole          @default(USER)
+  status             UserStatus        @default(ACTIVE)
   location           String
   isBloodDonate      Boolean
   availability       Boolean           @default(false)
@@ -36,7 +37,7 @@ model Profile {
   id               String   @id @default(uuid())
   userId           String   @unique
   bio              String?
-  age              Int?
+  age              String?
   lastDonationDate String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -46,19 +47,20 @@ model Profile {
 }
 
 model DonationRequest {
-  id              String        @id @default(uuid())
-  donorId         String
-  requesterId     String
-  phoneNumber     String
-  dateOfDonation  String
-  hospitalName    String
-  hospitalAddress String
-  reason          String
-  requestStatus   RequestStatus @default(PENDING)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  donor           User          @relation("donorRequests", fields: [donorId], references: [id])
-  requester       User          @relation("requesterRequests", fields: [requesterId], references: [id])
+  id             String        @id @default(uuid())
+  donorId        String?
+  requesterId    String?
+  phoneNumber    String
+  numberOfBag    String
+  hospitalName   String        @default("")
+  bloodType      BloodType
+  dateOfDonation String
+  reason         String
+  requestStatus  RequestStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  donor          User?         @relation("donorRequests", fields: [donorId], references: [id])
+  requester      User?         @relation("requesterRequests", fields: [requesterId], references: [id])
 
   @@map("donationRequests")
 }
@@ -66,6 +68,12 @@ model DonationRequest {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
 }
 
 enum RequestStatus {
