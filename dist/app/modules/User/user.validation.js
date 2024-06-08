@@ -30,18 +30,28 @@ const registrationUserValidationSchema = zod_1.z.object({
             required_error: "Location is required",
             invalid_type_error: "Location must be a string",
         }),
-        age: zod_1.z.number({
+        isBloodDonate: zod_1.z.boolean({
+            required_error: "Donation status is required",
+            invalid_type_error: "Donation status must be a boolean",
+        }),
+        age: zod_1.z
+            .number({
             required_error: "Age is required",
             invalid_type_error: "Age must be a number",
-        }),
-        bio: zod_1.z.string({
+        })
+            .optional(),
+        bio: zod_1.z
+            .string({
             required_error: "Bio is required",
             invalid_type_error: "Bio must be a string",
-        }),
-        lastDonationDate: zod_1.z.string({
+        })
+            .optional(),
+        lastDonationDate: zod_1.z
+            .string({
             required_error: "Last donation date is required",
             invalid_type_error: "Last donation date must be a string",
-        }),
+        })
+            .optional(),
     }),
 });
 const loginUserValidationSchema = zod_1.z.object({
@@ -62,7 +72,15 @@ const loginUserValidationSchema = zod_1.z.object({
             .max(20, { message: "Password can not be more than 20 characters" }),
     }),
 });
+const refreshTokenValidationSchema = zod_1.z.object({
+    cookies: zod_1.z.object({
+        refreshToken: zod_1.z.string({
+            required_error: "Refresh token is required!",
+        }),
+    }),
+});
 exports.userValidation = {
     registrationUserValidationSchema,
     loginUserValidationSchema,
+    refreshTokenValidationSchema,
 };

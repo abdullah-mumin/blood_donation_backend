@@ -12,23 +12,23 @@ To build and run this app locally you will need a few things:
 - Clone the repository
 
 ```
-git clone https://github.com/Porgramming-Hero-web-course/l2-b2-fullstack-track-assignment-8-abdullah-mumin
+git clone https://github.com/abdullah-mumin/blood_donation_backend.git
 ```
 
 - Install dependencies
 
 ```
-cd l2-b2-fullstack-track-assignment-8-abdullah-mumin
+cd blood_donation_backend
 npm install
 ```
 
 ```
-# Signin with your account and go to Database Access section, create a database with built-in Atlas admin role. Also remember your user-name and password.
+# Signin with your account and go to Database Access section, and copy your database url. Also remember your user-name and password.
 # Create a .env file and do the following
 
 NODE_ENV=development
 PORT=5000
-DATABASE_URL="postgres://postgres.nzsaokhwqyesadkmdhcg:duZxG8p3IZmUMunK@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+DATABASE_URL="youe database url"
 BCRYPT_SALT_ROUNDS=10
 JWT_ACCESS_SECRET=47c37ca21f4bab4f9f8c60f374a65e3c138cbfdfeb0781006f98c4bcb74c1707
 JWT_REFRESH_SECRET=5dfdf3ef6e50a3ab23c067abad626c1ddc6f7aab86680fb3547f67d88604408b39df21ae82f64572f524c1ec4a295104e99c788cf5e9bc4387aa6f7742f42e24
@@ -45,11 +45,11 @@ JWT_REFRESH_EXPIRES_IN=365d
 
 ```
 npm run build
-npm run start:dev
+npm run dev
 ```
 
 ### Live server link & Video Link
 
-- [Back-end Live Server](https://blood-donation-backend-zeta.vercel.app/)
-- [API Documentation](https://documenter.getpostman.com/view/20162521/2sA35HVzdj)
+- [Front-end Live Server](https://blood-donation-frontend-sigma.vercel.app/)
+- [Back-end Live Server](https://blooddonationbackendserver-root-dev.vercel.app/)
 - [Explanation Video](https://youtu.be/ITqXN4yUpII)

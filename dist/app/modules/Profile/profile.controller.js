@@ -18,8 +18,8 @@ const sendresponse_1 = __importDefault(require("../../utils/sendresponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const profile_service_1 = require("./profile.service");
 const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization;
-    const result = yield profile_service_1.profileServices.getMyProfile(token);
+    const fullToken = req.headers.authorization;
+    const result = yield profile_service_1.profileServices.getMyProfile(fullToken);
     (0, sendresponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -28,8 +28,8 @@ const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization;
-    const result = yield profile_service_1.profileServices.updateProfile(token, req.body);
+    const fullToken = req.headers.authorization;
+    const result = yield profile_service_1.profileServices.updateProfile(fullToken, req.body);
     (0, sendresponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

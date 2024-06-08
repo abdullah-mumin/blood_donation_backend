@@ -18,10 +18,11 @@ const AppError_1 = __importDefault(require("../../errors/AppError"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../../config"));
 const prisma_1 = __importDefault(require("../../utils/prisma"));
-const getMyProfile = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!token) {
+const getMyProfile = (fullToken) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!fullToken) {
         throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "Unauthorized Access", "You do not have the necessary permissions to access this resource.");
     }
+    const [, token] = fullToken.split(" ");
     const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_token);
     const { id, name, email } = decoded;
     const result = yield prisma_1.default.user.findUnique({
@@ -33,6 +34,7 @@ const getMyProfile = (token) => __awaiter(void 0, void 0, void 0, function* () {
             name: true,
             email: true,
             bloodType: true,
+            status: true,
             location: true,
             availability: true,
             createdAt: true,
@@ -42,26 +44,49 @@ const getMyProfile = (token) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
-const updateProfile = (token, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!token) {
+const updateProfile = (fullToken, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!fullToken) {
         throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "Unauthorized Access", "You do not have the necessary permissions to access this resource.");
     }
+    const [, token] = fullToken.split(" ");
     const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_token);
     const { id, name, email } = decoded;
-    const isUser = yield prisma_1.default.profile.findUnique({
+    const isUser = yield prisma_1.default.user.findUnique({
         where: {
-            userId: id,
+            id: id,
         },
     });
     if (!isUser) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Error", "User not found!");
     }
-    const result = yield prisma_1.default.profile.update({
-        where: {
-            userId: id,
-        },
-        data: payload,
-    });
+    // console.log(payload);
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        const profileData = {
+            bio: payload === null || payload === void 0 ? void 0 : payload.bio,
+            age: payload === null || payload === void 0 ? void 0 : payload.age,
+            lastDonationDate: payload === null || payload === void 0 ? void 0 : payload.lastDonationDate,
+        };
+        const userData = {
+            name: payload === null || payload === void 0 ? void 0 : payload.name,
+            location: payload === null || payload === void 0 ? void 0 : payload.location,
+            bloodType: payload === null || payload === void 0 ? void 0 : payload.bloodType,
+            availability: payload === null || payload === void 0 ? void 0 : payload.availability,
+            status: payload === null || payload === void 0 ? void 0 : payload.status,
+        };
+        const profileUpdateData = yield transactionClient.profile.update({
+            where: {
+                userId: id,
+            },
+            data: profileData,
+        });
+        const userUpdateData = yield transactionClient.user.update({
+            where: {
+                id: id,
+            },
+            data: userData,
+        });
+        return { profileUpdateData, userUpdateData };
+    }));
     return result;
 });
 exports.profileServices = {

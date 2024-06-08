@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "userProfiles" ALTER COLUMN "bio" DROP NOT NULL,
-ALTER COLUMN "age" DROP NOT NULL,
-ALTER COLUMN "lastDonationDate" DROP NOT NULL;
