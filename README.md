@@ -52,4 +52,4 @@ npm run dev
 
 - [Front-end Live Server](https://blood-donation-frontend-sigma.vercel.app/)
 - [Back-end Live Server](https://blooddonationbackendserver-root-dev.vercel.app/)
-- [Explanation Video](https://youtu.be/ITqXN4yUpII)
+- [Explanation Video](https://youtu.be/YYxtOuQoMOQ)
